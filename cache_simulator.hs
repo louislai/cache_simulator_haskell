@@ -6,14 +6,17 @@ import Prelude
 import Numeric
 
 
-main :: IO String
-main = do
-  cacheSize <- getLine
-  cacheBlockSize <- getLine
-  n <- getLine
-  addresses <- replicateM (read n :: Int) getLine
-  let numBlock = (read cacheSize :: Integer) `div` (read cacheBlockSize :: Integer)
-  return $ calculate (read n :: Integer) numBlock (read cacheBlockSize :: Integer) (initCache numBlock) (0, 0) addresses
+
+main :: IO ()
+main = 
+    do cacheSize <- getLine
+       cacheBlockSize <- getLine
+       n <- getLine
+       addresses <- replicateM (read n :: Int) getLine
+       let numBlock = (read cacheSize :: Integer) `div` (read cacheBlockSize :: Integer)
+           result   = calculate (read n :: Integer) numBlock (read cacheBlockSize :: Integer) (initCache numBlock) (0, 0) addresses
+       putStrLn $ result
+
 
 calculate :: Integer -> Integer -> Integer -> Cache -> HitCounter -> [String] -> String
 calculate n numBlock blockSize cache hc addresses
@@ -51,4 +54,4 @@ manipulateCache :: Integer -> Integer -> Cache -> (Cache, Float)
 manipulateCache index tag cache
         | (index == 0) && head cache == tag   = (cache, 1)
         | (index == 0) && (head cache /= tag) = (tag : tail cache, 0)
-        | otherwise                             = (head cache : fst (manipulateCache (index - 1) tag (tail cache)), snd (manipulateCache (index - 1) tag (tail cache)))
+        | otherwise                           = (head cache : fst (manipulateCache (index - 1) tag (tail cache)), snd (manipulateCache (index - 1) tag (tail cache)))
